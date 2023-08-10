@@ -1,1 +1,3 @@
 ﻿.idea
+src/*/bin
+src/*/obj
