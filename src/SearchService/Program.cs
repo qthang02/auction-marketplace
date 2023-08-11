@@ -1,7 +1,4 @@
-using MongoDB.Driver;
-using MongoDB.Entities;
 using SearchService.Data;
-using SearchService.models;
 
 var builder = WebApplication.CreateBuilder(args);
 
