@@ -2,6 +2,8 @@
 using AuctionService.Entities;
 using AuctionService.Repositories;
 using AutoMapper;
+using Contracts;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AuctionService.Controllers;
@@ -12,11 +14,13 @@ public class AuctionsController : ControllerBase
 {
     private readonly IAuctionRepository _repo;
     private readonly IMapper _mapper;
+    private readonly IPublishEndpoint _publishEndpoint;
     
-    public AuctionsController(IAuctionRepository repo, IMapper mapper)
+    public AuctionsController(IAuctionRepository repo, IMapper mapper, IPublishEndpoint publishEndpoint)
     {
         _repo = repo;
         _mapper = mapper;
+        _publishEndpoint = publishEndpoint;
     }
 
     [HttpGet]
@@ -45,6 +49,8 @@ public class AuctionsController : ControllerBase
         _repo.AddAuction(auction);
 
         var newAuction = _mapper.Map<AuctionDto>(auction);
+        
+        await _publishEndpoint.Publish(_mapper.Map<AuctionCreated>(newAuction));
 
         var result = await _repo.SaveChangesAsync();
 
