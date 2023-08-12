@@ -36,6 +36,11 @@ internal static class HostingExtensions
             .AddInMemoryClients(Config.Clients)
             .AddAspNetIdentity<ApplicationUser>();
 
+        builder.Services.ConfigureApplicationCookie(opt =>
+        {
+            opt.Cookie.SameSite = SameSiteMode.Lax;
+        });
+        
         builder.Services.AddAuthentication();
 
         return builder.Build();
